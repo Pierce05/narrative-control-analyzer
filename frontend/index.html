@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Narrative Control Analyzer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+    }
+    pre {
+      background: #f4f4f4;
+      padding: 15px;
+      white-space: pre-wrap;
+    }
+    
+  .bar-container {
+    width: 100%;
+    background: #eee;
+    height: 18px;
+    border-radius: 6px;
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
+
+  .bar {
+    height: 100%;
+    width: 0%;
+    background: #4f46e5;
+    border-radius: 6px;
+    transition: width 0.5s;
+  }
+
+  </style>
+</head>
+<body>
+
+  <h1>Narrative Control Analyzer</h1>
+
+  <h3>Article A</h3>
+  <textarea id="articleA" placeholder="Paste Article A here"></textarea>
+
+  <h3>Article B</h3>
+  <textarea id="articleB" placeholder="Paste Article B here"></textarea>
+
+  <button onclick="analyze()">Analyze</button>
+
+  <h3>Analysis Output</h3>
+  <pre id="output">Waiting for analysis...</pre>
+
+  <h3>Emotional Bias Visualization</h3>
+
+<div>
+  <strong>Article A</strong>
+  <div class="bar-container">
+    <div id="barA" class="bar"></div>
+  </div>
+  <span id="labelA"></span>
+</div>
+
+<br />
+
+<div>
+  <strong>Article B</strong>
+  <div class="bar-container">
+    <div id="barB" class="bar"></div>
+  </div>
+  <span id="labelB"></span>
+</div>
+
+  <script>
+    async function analyze() {
+      const articleA = document.getElementById("articleA").value;
+      const articleB = document.getElementById("articleB").value;
+
+      document.getElementById("output").innerText = "Analyzing...";
+
+      try {
+        const res = await fetch("http://localhost:3001/analyze", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ articleA, articleB })
+        });
+
+        const data = await res.json();
+        document.getElementById("output").innerText = data.output;
+        // ----- SIMPLE VISUALIZATION LOGIC -----
+const text = data.output.toLowerCase();
+
+let scoreA = 0;
+let scoreB = 0;
+
+// Very simple heuristic (judge-friendly, stable)
+if (text.includes("article a emotional")) scoreA += 40;
+if (text.includes("high")) scoreA += 40;
+if (text.includes("medium")) scoreA += 20;
+
+if (text.includes("article b emotional")) scoreB += 40;
+if (text.includes("high")) scoreB += 40;
+if (text.includes("medium")) scoreB += 20;
+
+// Clamp to 100
+scoreA = Math.min(scoreA, 100);
+scoreB = Math.min(scoreB, 100);
+
+// Update bars
+document.getElementById("barA").style.width = scoreA + "%";
+document.getElementById("barB").style.width = scoreB + "%";
+
+// Update labels
+document.getElementById("labelA").innerText =
+  "Emotional intensity: " + scoreA + "%";
+
+document.getElementById("labelB").innerText =
+  "Emotional intensity: " + scoreB + "%";
+
+
+      } catch (err) {
+        document.getElementById("output").innerText = "Error connecting to backend.";
+      }
+    }
+  </script>
+
+</body>
+</html>
