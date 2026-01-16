@@ -1,4 +1,5 @@
 # 🧠 Narrative Control Analyzer
+ → Narrative Control Analyzer reveals how emotional language and narrative framing shape reader perception when different media report the same event.
 
 Narrative Control Analyzer is a tool that helps users understand how the same event is framed differently across media sources.
 
