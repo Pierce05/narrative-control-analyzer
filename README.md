@@ -50,3 +50,11 @@ It analyzes **language, emotional tone, and narrative framing only**.
 cd backend
 npm install
 node index.js
+
+## 🌐 Live Demo
+
+Frontend hosted on Firebase:
+https://narrative-control-analyz-db26c.web.app/
+
+
+The backend uses Google Gemini via Google AI Studio and runs locally during demos for API key security.
